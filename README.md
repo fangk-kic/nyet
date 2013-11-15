@@ -1,3 +1,7 @@
+# ###################################################
+# I put down comments in learning Nyet in this repo
+# ###################################################
+
 # Nyet: Not YETI
 
 CloudFoundry uses YETI test suite for broad functionality testing.
