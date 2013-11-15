@@ -2,7 +2,25 @@ require 'spec_helper'
 require 'active_support/core_ext/numeric'
 require 'timeout'
 
+# here is rspec description
+#   to call this rspec, we could invoke 'rspec cf_mysql_spec.rb'
+#                       we could also use RakeTask like RakeFile do
+
+# describe the test case
+# (Object) describe(*args, &example_group_block)
+#    # an arbitrary number of arguments and an optional block
+#    # return a subclass object of RSpec::Core::ExampleGroup
+# arguments : typically 2 arguments
+#             1st : class / module / string
+#             2nd : optional & should be a string     /why?/ is ':service => true' rather than string
+
+
 describe 'Enforcing MySQL quota', :service => true do
+
+  # let() : take a symbol representing a method name and a block
+  #         define a memoized function named with ${symbol}
+  #         memozied : '1st time call in the scope : execute the function and cache the result'
+  #                    '2nd, 3rd, ... call in the scope : return the cached result'
   let(:app_name) { 'mysql-quota-check' }
   let(:namespace) { 'mysql' }
   let(:plan_name) { '100mb' }
@@ -10,6 +28,8 @@ describe 'Enforcing MySQL quota', :service => true do
   let(:quota_enforcer_sleep_time) { 2 }
 
   it 'enforces the storage quota' do
+
+    # create_and_use_managed_service : see spec/support/service.rb
     create_and_use_managed_service do |client|
       puts '*** Proving we can write'
       expect(client).to be_able_to_write('key', 'first_value')

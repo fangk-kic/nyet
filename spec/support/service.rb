@@ -1,18 +1,30 @@
 require "support/test_env"
 
 module ServiceHelper
-  def self.included(base)
+
+  def self.included(base)   # /when?/ invoked by who?
     base.instance_eval do
+      # instance_eval :
+      #    evaluates code_string / block withing context of receiver('base' here)
+      #    must be called by instance (unlike class_eval, must be called by class)
+
+      # let() : cache on 1st invoke; return cached value on following invoke
       let(:namespace) { nil }
-      let(:instance_name) { "#{app_name}_service_instance" }
+      let(:instance_name) { "#{app_name}_service_instance" }   #execute app_name, put the result in string
       let(:host) { "services-nyets-#{app_name}" }
 
-      with_user_with_org
-      with_shared_space
+      # user_with_org.rb
+      with_user_with_org   # get let() including : :admin_user, :regular_user, :org (some are from ENV())
+      with_shared_space    # get let() including : :space
 
-      let(:dog_tags) { {service: app_name} }
+      let(:dog_tags) { {service: app_name} }    # :dog_tags = { :service => app_name }
       let(:test_app_path) { File.join(File.dirname(__FILE__), "../../apps/ruby/app_sinatra_service") }
 
+      # sinatra : DSL for quickly creating web applications in Ruby with minimal effort
+      #   http://www.sinatrarb.com/
+      #   gem install sinatra
+
+      # executed before every scenario
       before do
         regular_user.clean_up_app_from_previous_run(app_name)
         regular_user.clean_up_service_instance_from_previous_run(space, instance_name)
@@ -23,11 +35,15 @@ module ServiceHelper
         @route = regular_user.create_route(@app, host, TestEnv.default.apps_domain)
       end
 
+      # executed after every scenario
       after do
         regular_user.clean_up_app_from_previous_run(app_name)
         regular_user.clean_up_service_instance_from_previous_run(space, instance_name)
         regular_user.clean_up_route_from_previous_run(host)
       end
+
+      # /what?/ what is scenario ?
+
     end
   end
 
