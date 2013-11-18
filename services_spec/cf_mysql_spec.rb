@@ -33,6 +33,7 @@ describe 'Enforcing MySQL quota', :service => true do
     create_and_use_managed_service do |client|
 
       # http://rubydoc.info/gems/rspec-expectations
+      # http://rubydoc.info/gems/rspec-expectations/RSpec/Matchers
 
       puts '*** Proving we can write'
       expect(client).to be_able_to_write('key', 'first_value')  # expect client.be_able_to_write('key','first_value')
@@ -63,16 +64,25 @@ describe 'Enforcing MySQL quota', :service => true do
     end
   end
 
+  # define a customer matchers used in expectation
+  # > such as expect(client).to be_able_to_write( 'key', 'value' )
   RSpec::Matchers.define :be_able_to_write do |key, value|
     match do |client|
       puts '---- Attempting to insert into the database'
       client.insert_value(key, value)
       client.get_value(key) == value
     end
-
+    # failure message for should
+    # > such as expect(client).to be_able_to_write( 'key', 'value' )
     failure_message_for_should do |_|
       'expected that client should be able to write to the database'
     end
+    # failure message for should not
+    # > such as expect(client).not_to be_able_to_write( 'key', 'value' )
+    # failure_message_for_should_not do |...|
+    #   'expected that ...'
+    # end
+
   end
 
   RSpec::Matchers.define :fail_to_insert do |key, value|
