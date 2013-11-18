@@ -2,7 +2,9 @@ require "support/test_env"
 
 module ServiceHelper
 
-  def self.included(base)   # /when?/ invoked by who?
+  # self.included( base ) 'Progmatic programming Ruby 1.9 and 2.0 4th edition P390'
+  # called when we include 'ServiceHelper' module in a class ('base' here), the included hook method gets invoked
+  def self.included(base)
     base.instance_eval do
       # instance_eval :
       #    evaluates code_string / block withing context of receiver('base' here)
@@ -22,6 +24,8 @@ module ServiceHelper
 
       # sinatra : DSL for quickly creating web applications in Ruby with minimal effort
       #   http://www.sinatrarb.com/
+      #   http://www.sinatrarb.com/documentation.html
+      #   book 'Sinatra tip and running'
       #   gem install sinatra
 
       # executed before every scenario
