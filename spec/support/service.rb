@@ -60,19 +60,19 @@ module ServiceHelper
 
     use_managed_service(service_instance, &blk)
 
-  rescue CFoundry::APIError => e
-    monitoring.record_metric("services.health", 0, dog_tags)
-    puts '--- CC error:'
-    puts '<<<'
-    puts e.request_trace
-    puts '>>>'
-    puts e.response_trace
-    raise
-  rescue RSpec::Core::Pending::PendingDeclaredInExample => e
-    raise e
-  rescue => e
-    monitoring.record_metric("services.health", 0, dog_tags)
-    raise e
+    rescue CFoundry::APIError => e
+      monitoring.record_metric("services.health", 0, dog_tags)
+      puts '--- CC error:'
+      puts '<<<'
+      puts e.request_trace
+      puts '>>>'
+      puts e.response_trace
+      raise
+    rescue RSpec::Core::Pending::PendingDeclaredInExample => e
+      raise e
+    rescue => e
+      monitoring.record_metric("services.health", 0, dog_tags)
+      raise e
   end
 
   def use_managed_service_instance(guid, &block)
@@ -110,20 +110,21 @@ module ServiceHelper
     blk.call(test_app)
 
     monitoring.record_metric("services.health", 1, dog_tags)
-  rescue CFoundry::APIError => e
-    monitoring.record_metric("services.health", 0, dog_tags)
-    puts '--- CC error:'
-    puts '<<<'
-    puts e.request_trace
-    puts '>>>'
-    puts e.response_trace
-    raise
-  rescue RSpec::Core::Pending::PendingDeclaredInExample => e
-    raise e
-  rescue => e
-    monitoring.record_metric("services.health", 0, dog_tags)
-    raise e
-  end
+
+    rescue CFoundry::APIError => e
+      monitoring.record_metric("services.health", 0, dog_tags)
+      puts '--- CC error:'
+      puts '<<<'
+      puts e.request_trace
+      puts '>>>'
+      puts e.response_trace
+      raise
+    rescue RSpec::Core::Pending::PendingDeclaredInExample => e
+      raise e
+    rescue => e
+      monitoring.record_metric("services.health", 0, dog_tags)
+      raise e
+    end
 end
 
 RSpec.configure do |config|

@@ -12,9 +12,9 @@ require 'timeout'
 #    # return a subclass object of RSpec::Core::ExampleGroup
 # arguments : typically 2 arguments
 #             1st : class / module / string
-#             2nd : optional & should be a string     /why?/ is ':service => true' rather than string
+#             2nd : optional & should be a string
 
-
+# /why?/ :service => true as the 2nd parameter
 describe 'Enforcing MySQL quota', :service => true do
 
   # let() : take a symbol representing a method name and a block
@@ -31,19 +31,22 @@ describe 'Enforcing MySQL quota', :service => true do
 
     # create_and_use_managed_service : see spec/support/service.rb
     create_and_use_managed_service do |client|
+
+      # http://rubydoc.info/gems/rspec-expectations
+
       puts '*** Proving we can write'
-      expect(client).to be_able_to_write('key', 'first_value')
+      expect(client).to be_able_to_write('key', 'first_value')  # expect client.be_able_to_write('key','first_value')
       puts '*** Proving we can read'
-      expect(client).to be_able_to_read('key', 'first_value')
+      expect(client).to be_able_to_read('key', 'first_value')   # expect client.be_able_to_read('key','first_value')
 
       puts '*** Exceeding quota'
-      client.exceed_quota_by_inserting(ENV['MYSQL_V2_MAX_MB'].to_i)
+      client.exceed_quota_by_inserting(ENV['MYSQL_V2_MAX_MB'].to_i)  # calling a function of the service
 
       puts '*** Sleeping to let quota enforcer run'
-      sleep quota_enforcer_sleep_time
+      sleep quota_enforcer_sleep_time    # waiting
 
       puts '*** Proving we cannot write'
-      expect(client).to fail_to_insert('after_enforcement', 'this should not be allowed in DB')
+      expect(client).to fail_to_insert('after_enforcement', 'this should not be allowed in DB')   # expect client.fail_to_insert('after_'.....)
       puts '*** Proving we can read'
       expect(client).to be_able_to_read('key', 'first_value')
 
